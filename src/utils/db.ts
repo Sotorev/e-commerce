@@ -10,7 +10,7 @@ class Database {
 	async connect(): Promise<MongoClient> {
 		if (!this.client) {
 			try {
-				this.client = new MongoClient(Bun.env.MONGO_URI!, {
+				this.client = new MongoClient(Bun.env.MONGODB_URI!, {
 					serverApi: {
 						version: ServerApiVersion.v1,
 						strict: true,
