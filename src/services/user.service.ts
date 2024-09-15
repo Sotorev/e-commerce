@@ -1,56 +1,92 @@
-import { MongoClient, Collection, ObjectId } from "mongodb";
-import { User, createUser } from "@/models/user.model";
-import bcrypt from "bcrypt";
+import { UserModel, User } from '@/models/user.model';
+import bcrypt from 'bcrypt';
+import { ObjectId } from 'mongodb';
+import { generateToken } from '@/utils/auth';
 
-const client = new MongoClient(process.env.MONGO_URI as string);
+export class UserService {
+	private userModel: UserModel;
 
-const getUserCollection = async (): Promise<Collection<User>> => {
-	if (client) await client.connect();
-	return client.db("e-commerce").collection("users");
-};
+	constructor() {
+		this.userModel = new UserModel();
+	}
 
-export const registerUser = async (username: string, email: string, password: string): Promise<User> => {
-	const users = await getUserCollection();
-	const salt = bcrypt.genSaltSync(10);
-	const passwordHash = bcrypt.hashSync(password, salt);
+	async registerUser(username: string, email: string, password: string, name: string, lastName: string): Promise<User> {
+		const existingUser = await this.userModel.findUserByEmail(email);
+		if (existingUser) {
+			throw new Error('El usuario ya existe');
+		}
 
-	const newUser: User = createUser({
-		username,
-		email,
-		passwordHash,
-		salt,
-		isEmailVerified: false,
-		twoFactorEnabled: false,
-		failedLoginAttempts: 0,
-		accountStatus: "active",
-		twoFactorSecret: undefined,
-		createdAt: new Date().toISOString(),
-		updatedAt: new Date().toISOString()
-	});
+		const salt = bcrypt.genSaltSync(10);
+		const passwordHash = bcrypt.hashSync(password, salt);
 
-	await users.insertOne(newUser);
-	return newUser;
-};
+		const newUser: User = {
+			name,
+			lastName,
+			username,
+			email,
+			passwordHash,
+			salt,
+			isEmailVerified: false,
+			twoFactorEnabled: false,
+			failedLoginAttempts: 0,
+			accountStatus: 'active',
+			createdAt: new Date().toISOString(),
+			updatedAt: new Date().toISOString(),
+		};
 
-export const findUserByEmail = async (email: string): Promise<User | null> => {
-	const users = await getUserCollection();
-	return users.findOne({ email });
-};
+		return this.userModel.createUser(newUser);
+	}
 
-export const updateUserProfile = async (userId: ObjectId, updateData: Partial<User>): Promise<User | null> => {
-	const users = await getUserCollection();
-	await users.updateOne({ _id: userId }, { $set: { ...updateData, updatedAt: new Date().toISOString() } });
-	return users.findOne({ _id: userId });
-};
+	async loginUser(email: string, password: string): Promise<{ user: User; token: string }> {
+		const user = await this.userModel.findUserByEmail(email);
+		if (!user) {
+			throw new Error('Correo o contraseña incorrectos');
+		}
 
-export const resetPassword = async (email: string, newPassword: string): Promise<boolean> => {
-	const users = await getUserCollection();
-	const salt = bcrypt.genSaltSync(10);
-	const passwordHash = bcrypt.hashSync(newPassword, salt);
+		const validPassword = bcrypt.compareSync(password, user.passwordHash);
+		if (!validPassword) {
+			throw new Error('Correo o contraseña incorrectos');
+		}
 
-	const result = await users.updateOne(
-		{ email },
-		{ $set: { passwordHash, salt, updatedAt: new Date().toISOString() } }
-	);
-	return result.modifiedCount > 0;
-};
+		const token = generateToken({ id: user._id, email: user.email });
+
+		return { user, token };
+	}
+
+	async getUserProfile(userId: string): Promise<User> {
+		const objectId = new ObjectId(userId);
+		const user = await this.userModel.findUserById(objectId);
+		if (!user) {
+			throw new Error('Usuario no encontrado');
+		}
+		return user;
+	}
+
+	async updateUserProfile(userId: string, updateData: Partial<User>): Promise<User> {
+		const objectId = new ObjectId(userId);
+		const user = await this.userModel.updateUser(objectId, updateData);
+		if (!user) {
+			throw new Error('Usuario no encontrado');
+		}
+		return user;
+	}
+
+	async resetPassword(email: string, newPassword: string): Promise<boolean> {
+		const salt = bcrypt.genSaltSync(10);
+		const passwordHash = bcrypt.hashSync(newPassword, salt);
+		return this.userModel.updatePassword(email, passwordHash, salt);
+	}
+
+	async requestPasswordReset(email: string): Promise<void> {
+		const user = await this.userModel.findUserByEmail(email);
+		if (!user) {
+			throw new Error('Usuario no encontrado');
+		}
+
+		// Generate a password reset token (this is a simplified example)
+		const resetToken = generateToken({ id: user._id }, '1h'); // Expires in 1 hour
+
+		// TODO: Send resetToken via email to the user
+		console.log(`Token de restablecimiento para ${email}: ${resetToken}`);
+	}
+}

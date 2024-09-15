@@ -1,23 +1,55 @@
-import { Router } from "express";
+// src/routes/userRoutes.ts
+import { Router } from 'express';
+import { UserController } from '@/controllers/user.controller';
+import { validate } from '@/utils/validate';
 import {
-	register,
-	login,
-	logout,
-	getProfile,
-	updateProfile,
-	requestPasswordReset,
-	resetPasswordHandler
-} from "@/controllers/user.controller";
-import { authenticateToken } from "@/utils/auth";
+	registerUserSchema,
+	loginUserSchema,
+	updateUserProfileSchema,
+	requestPasswordResetSchema,
+	resetPasswordSchema,
+} from '@/schemas/user.schema';
 
-const router = Router();
+const userRouter = Router();
+const userController = new UserController();
 
-router.post("/register", register);
-router.post("/login", login);
-router.post("/logout", logout);
-router.get("/profile", authenticateToken, getProfile);
-router.put("/profile", authenticateToken, updateProfile);
-router.post("/request-password-reset", requestPasswordReset);
-router.post("/reset-password", resetPasswordHandler);
+// Register a new user
+userRouter.post(
+	'/register',
+	validate(registerUserSchema),
+	(req, res) => userController.registerUser(req, res)
+);
 
-export default router;
+// Login user
+userRouter.post(
+	'/login',
+	validate(loginUserSchema),
+	(req, res) => userController.loginUser(req, res)
+);
+
+// Update user profile
+userRouter.put(
+	'/:id',
+	validate(updateUserProfileSchema),
+	(req, res) => userController.updateUserProfile(req, res)
+);
+
+// Request password reset
+userRouter.post(
+	'/request-password-reset',
+	validate(requestPasswordResetSchema),
+	(req, res) => userController.requestPasswordReset(req, res)
+);
+
+// Reset password
+userRouter.post(
+	'/reset-password',
+	validate(resetPasswordSchema),
+	(req, res) => userController.resetPassword(req, res)
+);
+
+// Logout and Get Profile routes remain the same
+userRouter.post('/logout', (req, res) => userController.logoutUser(req, res));
+userRouter.get('/:id', (req, res) => userController.getUserProfile(req, res));
+
+export default userRouter;

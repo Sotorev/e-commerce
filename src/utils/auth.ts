@@ -16,6 +16,9 @@ export const authenticateToken = (req: CustomRequest, res: Response, next: NextF
 	});
 };
 
-export const generateToken = (user: any) => {
-	return jwt.sign(user, process.env.JWT_SECRET as string, { expiresIn: "1h" });
+// utils/auth.ts
+
+export const generateToken = (payload: object, expiresIn: string = '7d'): string => {
+	return jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn });
 };
+

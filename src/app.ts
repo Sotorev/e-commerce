@@ -1,23 +1,21 @@
 import express from "express";
-import db from "./utils/db";
 import cors from "cors";
-import userRoutes from "./routes/user.routes";
+import userRouter from "./routes/user.routes";
+import productRouter from "./routes/product.routes";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use('/api/users', userRoutes);
+app.use('/api/users', userRouter);
+app.use('/api/products', productRouter);
+
+app.get('/', (req, res) => {
+	res.send('Hello World!');
+});
 
 const port = 4000;
 
-(async () => {
-	try {
-		await db.connect();
-	} catch (error) {
-		console.error('Error al iniciar la aplicación:', error);
-	}
-})();
 
 app.listen(port, () => {
 	console.log(`Listening on port ${port}...`);

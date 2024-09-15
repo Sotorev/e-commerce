@@ -1,54 +1,15 @@
-import { MongoClient, ServerApiVersion } from 'mongodb';
+// utils/db.ts
+import { MongoClient, Db } from 'mongodb';
 
-class Database {
-	private client: MongoClient | null;
+let dbInstance: Db | null = null;
 
-	constructor() {
-		this.client = null;
+export const getDb = async (): Promise<Db> => {
+	if (dbInstance) {
+		return dbInstance;
 	}
 
-	async connect(): Promise<MongoClient> {
-		if (!this.client) {
-			try {
-				this.client = new MongoClient(Bun.env.MONGODB_URI!, {
-					serverApi: {
-						version: ServerApiVersion.v1,
-						strict: true,
-						deprecationErrors: true,
-					}
-				});
-				await this.client.connect();
-				console.log('Conexión a MongoDB establecida');
-			} catch (error) {
-				console.error('Error al conectarse a MongoDB:', error);
-				throw error;
-			}
-		}
-		return this.client;
-	}
-
-	async getCollection(collectionName: string) {
-		if (!this.client) {
-			throw new Error('No hay conexión a MongoDB');
-		}
-		return this.client.db(Bun.env.DB_NAME!).collection(collectionName);
-	}
-
-	async close() {
-		if (this.client) {
-			await this.client.close();
-			this.client = null;
-		}
-	}
-	async startSession() {
-		if (!this.client) {
-			throw new Error('No hay conexión a MongoDB');
-		}
-		return this.client.startSession();
-	}
-}
-
-// Exporta una instancia de la clase Database
-export default new Database();
-
-
+	const client = new MongoClient(Bun.env.MONGO_URI as string);
+	await client.connect();
+	dbInstance = client.db(Bun.env.DB_NAME as string);
+	return dbInstance;
+};
