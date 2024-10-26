@@ -16,6 +16,7 @@ export interface User {
 	accountStatus: "active" | "locked";
 	createdAt: String;
 	updatedAt: String;
+	type: "user" | "admin" | "employee";
 }
 
 export class UserModel {
@@ -60,4 +61,3 @@ export class UserModel {
 		return result.modifiedCount > 0;
 	}
 }
-

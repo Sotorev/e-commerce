@@ -7,6 +7,7 @@ export const registerUserSchema = z.object({
 	username: z.string().min(3, { message: 'El nombre de usuario debe tener al menos 3 caracteres' }),
 	email: z.string().email({ message: 'Correo electrónico inválido' }),
 	password: z.string().min(5, { message: 'La contraseña debe tener al menos 6 caracteres' }),
+	type: z.enum(['user', 'admin', 'employee']),
 });
 
 export const loginUserSchema = z.object({
@@ -19,6 +20,8 @@ export const updateUserProfileSchema = z.object({
 	lastName: z.string().min(2, { message: 'El apellido debe tener al menos 2 caracteres' }),
 	username: z.string().min(3).optional(),
 	email: z.string().email().optional(),
+	password: z.string().min(5).optional(),
+	type: z.enum(['user', 'admin', 'employee']).optional(),
 	// Add other fields with appropriate validations
 });
 
