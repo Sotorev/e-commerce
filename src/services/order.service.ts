@@ -52,7 +52,6 @@ export class OrderService {
 			const orderItem: OrderItem = {
 				productId: productId,
 				quantity: item.quantity,
-				price: price,
 				variation: item.variation,
 			};
 			items.push(orderItem);

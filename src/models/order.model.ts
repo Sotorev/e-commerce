@@ -4,7 +4,6 @@ import { getDb } from '@/utils/db';
 export interface OrderItem {
 	productId: ObjectId | string;
 	quantity: number;
-	price: number; // Precio al momento del pedido
 	variation?: { [key: string]: any };
 }
 

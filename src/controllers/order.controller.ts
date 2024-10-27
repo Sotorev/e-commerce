@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { OrderService } from '@/services/order.service';
+import { createOrderSchema } from '@/schemas/order.schema';
 
 export class OrderController {
 	private orderService: OrderService;
@@ -9,8 +10,16 @@ export class OrderController {
 	}
 
 	async createOrder(req: Request, res: Response): Promise<void> {
+		// Validate the request body with zod
+		const { error, data } = createOrderSchema.safeParse(req.body);
+
+		if (error) {
+			res.status(400).json({ error: error.errors });
+			return;
+		}
+
 		try {
-			const orderData = req.body;
+			const orderData = data;
 			const order = await this.orderService.createOrder(orderData);
 			res.status(201).json({ message: 'Pedido creado con éxito', order });
 		} catch (error: any) {

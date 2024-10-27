@@ -1,6 +1,7 @@
 // src/controllers/product.controller.ts
 import { Request, Response } from 'express';
 import { ProductService } from '@/services/product.service';
+import { productSchema } from '@/schemas/product.schema';
 
 export class ProductController {
 	private productService: ProductService;
@@ -33,8 +34,16 @@ export class ProductController {
 	}
 
 	async addProduct(req: Request, res: Response): Promise<void> {
+		//Validate the request body with zod
+		const { error, data } = productSchema.safeParse(req.body);
+
+		if (error) {
+			res.status(400).json({ error: error.errors });
+			return;
+		}
+		
 		try {
-			const productData = req.body;
+			const productData = data;
 			const newProduct = await this.productService.addProduct(productData);
 			res.status(201).json(newProduct);
 		} catch (error: any) {

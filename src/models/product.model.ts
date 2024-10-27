@@ -6,15 +6,15 @@ export interface Product {
 	_id?: ObjectId | string;
 	name: string;
 	description: string;
-	images: string[];
-	videos: string[];
+	images?: string[];
+	videos?: string[];
 	specifications: Record<string, any>;
 	price: number;
 	inventory: number;
 	variations: Array<{ size?: string, color?: string, [key: string]: any }>;
 	category: string;
 	tags: string[];
-	isActive: boolean;
+	isActive?: boolean;
 	createdAt: Date;
 	updatedAt: Date;
 	supplierId: string | ObjectId;
