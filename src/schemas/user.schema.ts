@@ -7,7 +7,7 @@ export const registerUserSchema = z.object({
 	username: z.string().min(3, { message: 'El nombre de usuario debe tener al menos 3 caracteres' }),
 	email: z.string().email({ message: 'Correo electrónico inválido' }),
 	password: z.string().min(5, { message: 'La contraseña debe tener al menos 6 caracteres' }),
-	type: z.enum(['user', 'admin', 'employee']),
+	type: z.enum(['customer', 'admin', 'employee']),
 });
 
 export const loginUserSchema = z.object({

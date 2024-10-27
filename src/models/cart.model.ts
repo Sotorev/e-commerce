@@ -25,6 +25,9 @@ export class CartModel {
 	}
 
 	async createCart(cart: Cart): Promise<Cart> {
+		cart.isActive = true;
+		cart.createdAt = new Date();
+		cart.updatedAt = new Date();
 		const carts = await this.getCollection();
 		const result = await carts.insertOne(cart);
 		return { ...cart, _id: result.insertedId };
@@ -45,6 +48,6 @@ export class CartModel {
 
 	async deleteCart(userId: ObjectId | string): Promise<void> {
 		const carts = await this.getCollection();
-		await carts.deleteOne({ userId: new ObjectId(userId) });
+		await carts.updateOne({ userId: new ObjectId(userId) }, { $set: { isActive: false } });
 	}
 }
