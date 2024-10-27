@@ -14,6 +14,7 @@ export interface Product {
 	variations: Array<{ size?: string, color?: string, [key: string]: any }>;
 	category: string;
 	tags: string[];
+	isActive: boolean;
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -27,6 +28,9 @@ export class ProductModel {
 	}
 
 	async createProduct(product: Product): Promise<Product> {
+		product.createdAt = new Date();
+		product.updatedAt = new Date();
+		product.isActive = true;
 		const collection = await this.getCollection();
 		const result = await collection.insertOne(product);
 		return { ...product, _id: result.insertedId };
@@ -43,12 +47,13 @@ export class ProductModel {
 	}
 
 	async updateProduct(id: string, product: Partial<Product>): Promise<void> {
+		product.updatedAt = new Date();
 		const collection = await this.getCollection();
 		await collection.updateOne({ _id: new ObjectId(id) }, { $set: product });
 	}
 
 	async deleteProduct(id: string): Promise<void> {
 		const collection = await this.getCollection();
-		await collection.deleteOne({ _id: new ObjectId(id) });
+		await collection.updateOne({ _id: new ObjectId(id) }, { $set: { isActive: false } });
 	}
 }

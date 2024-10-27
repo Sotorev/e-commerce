@@ -111,4 +111,13 @@ export class UserController {
 			res.status(500).json({ error: error.message });
 		}
 	}
+
+	async getAllUsers(req: Request, res: Response): Promise<void> {
+		try {
+			const users = await this.userService.getAllUsers();
+			res.status(200).json({ users });
+		} catch (error: any) {
+			res.status(500).json({ error: error.message });
+		}
+	}
 }

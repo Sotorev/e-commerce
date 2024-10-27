@@ -99,4 +99,8 @@ export class UserService {
 		const objectId = new ObjectId(userId);
 		return this.userModel.deactivateUser(objectId);
 	}
+
+	async getAllUsers(): Promise<User[]> {
+		return this.userModel.getAllUsers();
+	}
 }

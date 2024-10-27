@@ -76,4 +76,9 @@ export class UserModel {
 		const result = await users.updateOne({ _id: new ObjectId(userId) }, { $set: { isActive: false } });
 		return result.modifiedCount > 0;
 	}
+
+	async getAllUsers(): Promise<User[]> {
+		const users = await this.getCollection();
+		return users.find().toArray();
+	}
 }

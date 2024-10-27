@@ -13,6 +13,7 @@ export interface Cart {
 	items: CartItem[];
 	createdAt: Date;
 	updatedAt: Date;
+	isActive: boolean;
 }
 
 export class CartModel {
