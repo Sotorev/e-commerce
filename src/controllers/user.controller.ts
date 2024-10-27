@@ -9,9 +9,9 @@ export class UserController {
 	}
 
 	async registerUser(req: Request, res: Response): Promise<void> {
-		const { username, email, password, name, lastName } = req.body;
+		const { username, email, password, name, lastName, type } = req.body;
 		try {
-			const user = await this.userService.registerUser(username, email, password, name, lastName);
+			const user = await this.userService.registerUser(username, email, password, name, lastName, type);
 			res.status(201).json({ message: 'Usuario registrado con éxito', user });
 		} catch (error: any) {
 			res.status(400).json({ error: error.message });
