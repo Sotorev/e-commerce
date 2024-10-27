@@ -94,4 +94,9 @@ export class UserService {
 	async getUsersByType(type: "customer" | "admin" | "employee"): Promise<User[]> {
 		return this.userModel.getUsersByType(type);
 	}
+
+	async deactivateUser(userId: string): Promise<boolean> {
+		const objectId = new ObjectId(userId);
+		return this.userModel.deactivateUser(objectId);
+	}
 }

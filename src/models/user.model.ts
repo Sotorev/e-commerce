@@ -44,14 +44,14 @@ export class UserModel {
 
 	async findUserById(userId: ObjectId): Promise<User | null> {
 		const users = await this.getCollection();
-		return users.findOne({ _id: userId });
+		return users.findOne({ _id: new ObjectId(userId) });
 	}
 
 	async updateUser(userId: ObjectId, updateData: Partial<User>): Promise<User | null> {
 		updateData.updatedAt = new Date().toISOString();
 		const users = await this.getCollection();
 		await users.updateOne(
-			{ _id: userId },
+			{ _id: new ObjectId(userId) },
 			{ $set: { ...updateData, updatedAt: new Date().toISOString() } }
 		);
 		return users.findOne({ _id: userId });
@@ -69,5 +69,11 @@ export class UserModel {
 	async getUsersByType(userType: "customer" | "admin" | "employee"): Promise<User[]> {
 		const users = await this.getCollection();
 		return users.find({ type: userType, isActive:true }).toArray();
+	}
+
+	async deactivateUser(userId: ObjectId): Promise<boolean> {
+		const users = await this.getCollection();
+		const result = await users.updateOne({ _id: new ObjectId(userId) }, { $set: { isActive: false } });
+		return result.modifiedCount > 0;
 	}
 }

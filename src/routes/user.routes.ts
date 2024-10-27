@@ -54,4 +54,6 @@ userRouter.get('/:id', (req, res) => userController.getUserProfile(req, res));
 
 userRouter.get('/by-type/:type', (req, res) => userController.getUsersByType(req, res));
 
+userRouter.delete('/:id', (req, res) => userController.deactivateUser(req, res));
+
 export default userRouter;
