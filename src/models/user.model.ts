@@ -16,7 +16,7 @@ export interface User {
 	accountStatus: "active" | "locked";
 	createdAt: String;
 	updatedAt: String;
-	type: "user" | "admin" | "employee";
+	type: "customer" | "admin" | "employee";
 }
 
 export class UserModel {

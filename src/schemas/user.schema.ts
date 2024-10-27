@@ -21,7 +21,7 @@ export const updateUserProfileSchema = z.object({
 	username: z.string().min(3).optional(),
 	email: z.string().email().optional(),
 	password: z.string().min(5).optional(),
-	type: z.enum(['user', 'admin', 'employee']).optional(),
+	type: z.enum(['customer', 'admin', 'employee']).optional(),
 	// Add other fields with appropriate validations
 });
 

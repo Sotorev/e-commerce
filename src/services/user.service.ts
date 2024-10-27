@@ -10,7 +10,7 @@ export class UserService {
 		this.userModel = new UserModel();
 	}
 
-	async registerUser(username: string, email: string, password: string, name: string, lastName: string, type: "user" | "admin" | "employee"): Promise<User> {
+	async registerUser(username: string, email: string, password: string, name: string, lastName: string, type: "customer" | "admin" | "employee"): Promise<User> {
 		const existingUser = await this.userModel.findUserByEmail(email);
 		if (existingUser) {
 			throw new Error('El usuario ya existe');
