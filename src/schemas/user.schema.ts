@@ -1,5 +1,5 @@
 // src/schemas/userSchemas.ts
-import { z } from 'zod';
+import { isAborted, z } from 'zod';
 
 export const registerUserSchema = z.object({
 	name: z.string().min(2, { message: 'El nombre debe tener al menos 2 caracteres' }),
@@ -21,6 +21,7 @@ export const updateUserProfileSchema = z.object({
 	username: z.string().min(3).optional(),
 	email: z.string().email().optional(),
 	password: z.string().min(5).optional(),
+	isActive: z.boolean().optional(),
 	type: z.enum(['customer', 'admin', 'employee']).optional(),
 	// Add other fields with appropriate validations
 });
