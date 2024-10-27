@@ -17,6 +17,7 @@ export interface Product {
 	isActive: boolean;
 	createdAt: Date;
 	updatedAt: Date;
+	supplierId: string | ObjectId;
 }
 
 export class ProductModel {

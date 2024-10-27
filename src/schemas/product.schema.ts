@@ -9,6 +9,7 @@ export const productSchema = z.object({
 	specifications: z.record(z.any()).optional(),
 	price: z.number().min(0, 'Price must be greater than or equal to 0'),
 	inventory: z.number().min(0, 'Inventory must be greater than or equal to 0'),
+	supplierId: z.string(),
 	variations: z
 		.array(
 			z.object({
