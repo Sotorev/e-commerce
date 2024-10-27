@@ -17,6 +17,7 @@ export interface User {
 	createdAt: String;
 	updatedAt: String;
 	type: "customer" | "admin" | "employee";
+	isActive?: boolean;
 }
 
 export class UserModel {
@@ -28,6 +29,9 @@ export class UserModel {
 	}
 
 	async createUser(user: User): Promise<User> {
+		user.isActive = true;
+		user.createdAt = new Date().toISOString();
+		user.updatedAt = new Date().toISOString();
 		const users = await this.getCollection();
 		const result = await users.insertOne(user);
 		return { ...user, _id: result.insertedId };
@@ -44,6 +48,7 @@ export class UserModel {
 	}
 
 	async updateUser(userId: ObjectId, updateData: Partial<User>): Promise<User | null> {
+		updateData.updatedAt = new Date().toISOString();
 		const users = await this.getCollection();
 		await users.updateOne(
 			{ _id: userId },
@@ -59,5 +64,10 @@ export class UserModel {
 			{ $set: { passwordHash, salt, updatedAt: new Date().toISOString() } }
 		);
 		return result.modifiedCount > 0;
+	}
+
+	async getUsersByType(userType: "customer" | "admin" | "employee"): Promise<User[]> {
+		const users = await this.getCollection();
+		return users.find({ type: userType, isActive:true }).toArray();
 	}
 }

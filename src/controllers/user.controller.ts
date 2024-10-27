@@ -87,4 +87,14 @@ export class UserController {
 			res.status(500).json({ error: error.message });
 		}
 	}
+
+	async getUsersByType(req: Request, res: Response): Promise<void> {
+		const type  = req.params.type as "customer" | "admin" | "employee";
+		try {
+			const users = await this.userService.getUsersByType(type);
+			res.status(200).json({ users });
+		} catch (error: any) {
+			res.status(500).json({ error: error.message });
+		}
+	}
 }

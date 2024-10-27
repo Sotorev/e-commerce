@@ -52,4 +52,6 @@ userRouter.post(
 userRouter.post('/logout', (req, res) => userController.logoutUser(req, res));
 userRouter.get('/:id', (req, res) => userController.getUserProfile(req, res));
 
+userRouter.get('/by-type/:type', (req, res) => userController.getUsersByType(req, res));
+
 export default userRouter;

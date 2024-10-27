@@ -90,4 +90,8 @@ export class UserService {
 		// TODO: Send resetToken via email to the user
 		console.log(`Token de restablecimiento para ${email}: ${resetToken}`);
 	}
+
+	async getUsersByType(type: "customer" | "admin" | "employee"): Promise<User[]> {
+		return this.userModel.getUsersByType(type);
+	}
 }
