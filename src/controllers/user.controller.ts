@@ -22,11 +22,21 @@ export class UserController {
 		const { email, password } = req.body;
 		try {
 			const { user, token } = await this.userService.loginUser(email, password);
-			res.status(200).json({ message: 'Inicio de sesión exitoso', token });
+			// Incluye type, name y lastName en la respuesta para guardarlos en el cliente
+			res.status(200).json({
+				message: 'Inicio de sesión exitoso',
+				token,
+				user: {
+					id: user._id,
+					type: user.type,
+					name: user.name,
+					lastName: user.lastName
+				}
+			});
 		} catch (error: any) {
 			res.status(401).json({ error: error.message });
 		}
-	}
+	}	
 
 	logoutUser(req: Request, res: Response): void {
 		// For token-based authentication, logout is handled on the client side
