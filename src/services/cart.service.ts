@@ -20,6 +20,7 @@ export class CartService {
 				items: [],
 				createdAt: new Date(),
 				updatedAt: new Date(),
+				isActive: true,
 			});
 		}
 		return cart;
