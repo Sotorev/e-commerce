@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
 
-const enviroment = Bun.env.ENVIROMENT;
-const client_id = Bun.env.CLIENT_ID;
-const client_secret = Bun.env.CLIENT_SECRET;
-
-const endpoint_url = enviroment === 'sandbox' ? 'https://api.sandbox.paypal.com' : 'https://api.sandbox.paypal.com';
+// Tus credenciales de sandbox
+const client_id = "ARRA3T3Mmd2KujxvoCVGbtp2QrFaD1_ofYR5EU1nzSPCQ6KVpVcjIaIJGPdkXok17A7piny14eOH-rt0";
+const client_secret = "ENSixxFPT5rHxv_eZtTOd-xYdLUYKeugzcHj0XDKBV7EpGgQAcseq7UtSKaAfwoes1RFgDogRGAMJ-Q6";
+const endpoint_url = 'https://api.sandbox.paypal.com'; // Forzamos el uso de sandbox
 
 /**
  * Creates an order and returns it as a JSON response.

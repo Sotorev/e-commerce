@@ -12,7 +12,7 @@ const orderController = new OrderController();
 // Crear un nuevo pedido
 orderRouter.post(
 	'/',
-	validate(createOrderSchema),
+	// validate(createOrderSchema),
 	(req, res) => orderController.createOrder(req, res)
 );
 

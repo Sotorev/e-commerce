@@ -7,6 +7,8 @@ export const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.post('/create_order', createOrder);
+app.post('/complete_order', completeOrder);
 app.use("/api", router);
 
 app.get('/', (req, res) => {
@@ -15,8 +17,6 @@ app.get('/', (req, res) => {
 
 const port = 4000;
 
-app.post('/create_order', createOrder);
-app.post('/complete_order', completeOrder);
 
 // Helper / Utility functions
 
