@@ -19,13 +19,13 @@ const endpoint_url = 'https://api.sandbox.paypal.com'; // Forzamos el uso de san
  */
 export function createOrder(req: Request, res: Response) {
 	get_access_token()
-		.then(access_token => {
+		.then(access_token => {			
 			let order_data_json = {
 				'intent': req.body.intent.toUpperCase(),
 				'purchase_units': [{
 					'amount': {
 						'currency_code': 'USD',
-						'value': '100.00'
+						'value': Number(req.body.amount)
 					}
 				}]
 			};
